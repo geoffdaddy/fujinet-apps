@@ -12,17 +12,27 @@
 #include <string.h>
 #include "network_utils.h"
 
+#define READ_WRITE 12
+
+
+struct
+  {
+    unsigned char cmd;
+    unsigned char aux1;
+    unsigned char aux2;
+    unsigned char url[160];
+  } co;
+
 unsigned char network_open(char *url, unsigned char mode, unsigned char translation)
 {
-  char resp[259];
-  
-  resp[0]='O';
-  resp[1]=mode;
-  resp[2]=translation;
+  memset(co,0,sizeof(co));
+  co.cmd = 'O';
+  co.aux1 = READ_WRITE;
+  co.aux2 = translation;
+  strcpy(co.url,"N:");
+  strcat(co.url,url);
 
-  strncpy(&resp[3],url,256);
-
-  return eos_write_character_device(NET_DEV,resp,259);
+  return eos_write_character_device(NET_DEV,co,sizeof(co));
 }
 
 #endif

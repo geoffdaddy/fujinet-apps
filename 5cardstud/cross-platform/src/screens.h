@@ -146,10 +146,12 @@ void showTableSelectionScreen() {
     drawLine(3,8,WIDTH-6);
 
     if (apiCall("tables")) {
+      cputs("apicall");
       updateState();
 
       if (tableCount>0) {
         for(i=0;i<tableCount;++i) {
+          cputs("got here");
           drawText(3,9+i*2, state.tables[i].name);
           drawText(WIDTH-3-strlen(state.tables[i].players), 9+i*2, state.tables[i].players);
         }
