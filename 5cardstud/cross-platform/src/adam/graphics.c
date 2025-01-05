@@ -142,10 +142,38 @@ void drawPointer(unsigned char x, unsigned char y)
 
 void drawLine(unsigned char x, unsigned char y, unsigned char w)
 {
+    unsigned char i;
+    gotoxy(x,y);
+    for (i=0; i<w; i++)
+        cputc(HORIZONTAL_TILE);
 }
 
 void drawBox(unsigned char x, unsigned char y, unsigned char w, unsigned char h)
 {
+    unsigned char i;
+    gotoxy(x,y++);
+    //Draw the top
+    cputc(UL_CORNER_TILE);
+    for (i = 1; i <= w; i++)
+        cputc(HORIZONTAL_TILE);
+    cputc(UR_CORNER_TILE);
+
+    //Draw the sides
+    for (i = 0; i < h; i++)
+    {
+        gotoxy(x,y);
+        cputc(VERTICAL_TILE);
+        gotoxy(x+w+1,y++);
+        cputc(VERTICAL_TILE);
+    }
+    gotoxy(x,y);
+    //Draw the bottom
+    cputc(LL_CORNER_TILE);
+    for (i = 1; i <= w; i++)
+        cputc(HORIZONTAL_TILE);
+    cputc(LR_CORNER_TILE);
+    //   printf("\x20\x20\x20\x20\x20\x9A\x9B\x9C\x20\x20\x20\x20\x20       FIVE CARD STUD");
+    
 }
 
 void drawBorder()

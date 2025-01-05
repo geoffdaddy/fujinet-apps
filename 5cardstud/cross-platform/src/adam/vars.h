@@ -5,8 +5,8 @@
 
 // Screen dimensions for platform
 
-#define WIDTH 40
-#define HEIGHT 25
+#define WIDTH 32
+#define HEIGHT 24
 
 
 /**

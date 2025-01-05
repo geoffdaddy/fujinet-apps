@@ -1,4 +1,6 @@
 #ifdef __ADAM__
+#include <eos.h>
+#include "network_utils.h"
 
 /*
   Network functionality
