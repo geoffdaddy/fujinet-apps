@@ -20,7 +20,10 @@ int getJsonResponse(char *url, char *buffer, int max_length)
 
   if (eos_read_character_device(NET_DEV,buffer,max_length) != ACK)
     return 0;
-  
+
+  if (network_status(stat) != 0x80)
+    return 0;
+
   return stat.rxBytesWaiting;
 }
 
