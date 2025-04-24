@@ -16,16 +16,17 @@ extern unsigned char response[1024];
 
 unsigned short network_read(char *buf, unsigned short len)
 {
+  unsigned short length = 0;
   DCB *dcb = eos_find_dcb(NET_DEV); // Replace with net device
   unsigned char r=eos_read_character_device(NET_DEV,response,1024);
-  
-  if (r == 0x80)
-    {
-      memcpy(buf,response,dcb->len);
-      return dcb->len;
-    }
-  else
-    return 0;
+  if (r == ACK)
+  {
+    memcpy(buf,response,dcb->len);
+    length = dcb->len;
+    buf[length] = 0;
+  }
+
+  return length;
 }
 
 #endif

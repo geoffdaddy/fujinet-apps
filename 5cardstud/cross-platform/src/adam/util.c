@@ -1,6 +1,5 @@
 #ifdef __ADAM__
 #include <eos.h>
-#include <time.h>
 
 unsigned long currentTime;
 /*
@@ -14,7 +13,7 @@ void resetTimer()
 
 int getTime()
 {
-  return currentTime/60;
+  return currentTime;
 }
 
 void quit()

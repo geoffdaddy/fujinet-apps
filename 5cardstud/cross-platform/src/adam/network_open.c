@@ -14,24 +14,14 @@
 
 #define READ_WRITE 12
 
-
-struct
-  {
-    unsigned char cmd;
-    unsigned char aux1;
-    unsigned char aux2;
-    unsigned char url[160];
-  } co;
-
 unsigned char network_open(char *url, unsigned char mode, unsigned char translation)
 {
+  FUJI_CMD co;
   memset(co,0,sizeof(co));
   co.cmd = 'O';
-  co.aux1 = READ_WRITE;
-  co.aux2 = translation;
-  strcpy(co.url,"N:");
-  strcat(co.url,url);
-
+  co.mode = READ_WRITE;
+  co.trans = translation;
+  strcpy(co.url,url);
   return eos_write_character_device(NET_DEV,co,sizeof(co));
 }
 
