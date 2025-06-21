@@ -2,6 +2,9 @@ obj
 fcs
 fcs_*
 fcs.*
-.vscode/settings.json
+
 gen/gencharset
 gen/charset
+
+fujinet-lib
+_libs

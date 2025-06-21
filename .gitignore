@@ -24,6 +24,8 @@
 
 # lib exceptions
 !fujinet-network-*.lib
+!fujinet-*.lib
+fujinet-lib/
 
 # Shared objects (inc. Windows DLLs)
 *.dll
@@ -65,8 +67,15 @@ build/
 dist/
 obj/
 
-# altirra/applewin debugging... clue's in the name
+# emulator configs
 altirra-debug.ini
+atari800-debug.cfg
 AppleWin.log
 
 Makefile.options
+.DS_Store
+weather/adam/weather_BOOTSTRAP.bin
+weather/adam/weather.ddp
+test/adam/.clang-format
+weather/_libs/
+**/_libs/

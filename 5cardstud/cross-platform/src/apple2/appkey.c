@@ -1,39 +1,30 @@
 #ifdef __APPLE2__
-
 /**
  * @brief   Cbm App Key Functions
  * @author  Eric Carr
  * @license gpl v. 3
  */
 
+#include "../fujinet-fuji.h"
+#include <string.h>
+#include <stdio.h>
 
-/**
- * @brief Open a key for reading or writing
- * @param open_mode 0 = read, 1 = write
- * @param creator_id Key creator ID: ($0000-$FFFF)
- * @param app_id The App ID ($00-$FF)
- * @param key_id The Key ID ($00-$FF)
- * @return error code
- */
-unsigned char open_appkey(unsigned char open_mode, unsigned int creator_id, unsigned char app_id, unsigned char key_id)
-{ 
-  static unsigned char appkey_error;
 
-  return appkey_error;
+void read_appkey(uint16_t creator_id, uint8_t app_id, uint8_t key_id, uint8_t* destination) {
+  uint16_t read = 0;
+
+  fuji_set_appkey_details(creator_id, app_id, DEFAULT);
+  if (!fuji_read_appkey(key_id, &read, destination))
+    read=0;
+
+  // Add string terminator at end
+  destination[read] = 0;
 }
 
-
-
-unsigned char read_appkey(unsigned int creator_id, unsigned char app_id, unsigned char key_id, char* data)
+void write_appkey(uint16_t creator_id, uint8_t app_id, uint8_t key_id, uint8_t *inputString)
 {
-  static unsigned char appkey_error;
-  return appkey_error;
-}
-
-unsigned char write_appkey(unsigned int creator_id, unsigned char app_id, unsigned char key_id, const char *data)
-{
-  static unsigned char appkey_error;
-  return appkey_error;
+  fuji_set_appkey_details(creator_id, app_id, DEFAULT);
+  fuji_write_appkey(key_id, strlen(inputString), inputString);
 }
 
 #endif /* __C64__ */

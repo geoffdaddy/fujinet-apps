@@ -6,6 +6,7 @@
  * @verbose main()
  */
 
+#include <smartkeys.h>
 #include <stdbool.h>
 #include "globals.h"
 #include "splash.h"
@@ -14,7 +15,9 @@
 
 void main(void)
 {
-  state=TERM;
+    smartkeys_sound_init();
+    
+  state=SPLASH;
   while (true)
     {
       switch(state)

@@ -3,79 +3,17 @@
  * @author  Eric Carr, Thomas Cherryhomes, (insert names here)
  * @license gpl v. 3
  * @verbose main
- */ 
+ */
+
+#ifdef _CMOC_VERSION_
+#include "coco/coco_bool.h"
+#include "cardgame.h"
+#else
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
-
-// FujiNet AppKey settings. These should not be changed
-#define AK_LOBBY_CREATOR_ID 1     // FUJINET Lobby
-#define AK_LOBBY_APP_ID 1         // Lobby Enabled Game
-#define AK_LOBBY_KEY_USERNAME 0   // Lobby Username key
-#define AK_LOBBY_KEY_SERVER 1     // 5 Card Stud Client registered as Lobby appkey 1
-
-// 5 Card Stud client
-#define AK_CREATOR_ID 0xE41C      // Eric Carr//s creator id
-#define AK_APP_ID 1               // 5 Card/Poker App ID
-#define AK_KEY_SHOWHELP 0         // Shown help
-#define AK_KEY_COLORTHEME 1       // Color theme
-
-// Store default server endpoint in case lobby did not set app key
-char serverEndpoint[64] = "https://5card.carr-designs.com/";
-char query[64] = ""; //?table=blue&player=C64ERIC";
-char playerName[64] = "";
-
-typedef struct {
-  char * table;
-  char * name;
-  char players[8];
-} Table;
-
-typedef struct {
-  char * name;
-  unsigned char status;
-  int bet;
-  char * move;
-  int purse;      
-  char * hand;
-} Player;
-
-typedef struct {
-  char * move;
-  char * name; 
-} ValidMove;
-
-typedef struct {
-  char * lastResult;
-  unsigned char round;
-  int pot;
-  signed char activePlayer;
-  unsigned char moveTime;
-  unsigned char viewing;
-  ValidMove validMoves[5];
-  Player players[8];
-  Table tables[10];
-
-} GameState;
-
-GameState state;
-
-
-
-// State helper vars
-unsigned char playerCount, prevPlayerCount, validMoveCount, prevRound, tableCount, currentCard, cardIndex, xOffset, fullFirst, cursorX, cursorY, waitCount, inputKey, wasViewing;
-signed char inputDirX, inputDirY;
-int prevPot, rx_len, maxJifs;
-
-unsigned char playerX[8], playerY[8], moveLoc[5];
-signed char playerBetX[8], playerBetY[8], playerDir[8];
-bool noAnim, doAnim, finalFlip, inputTrigger;
-
-// Common local scope temp variables
-unsigned char h, i, j, k, x, y, xx;
-char tempBuffer[255];
-char *hand, *requestedMove;
+#endif /* _CMOC_VERSION_ */
 
 #include "platform-specific/graphics.h"
 #include "platform-specific/util.h"
@@ -89,14 +27,57 @@ char *hand, *requestedMove;
 #include "gamelogic.h"
 #include "screens.h"
 
-void main(void) {
+// Store default server endpoint in case lobby did not set app key
+char serverEndpoint[50] = "https://5card.carr-designs.com/";
+//char serverEndpoint[50] = "http://127.0.0.1:8080/"; // "N: for apple, but not C64"
 
+char query[50] = ""; //"?table=dev7";//&player=ERICAPL2";
+char playerName[12] = ""; // "eric";
+
+//GameState state;
+ClientState clientState;
+
+
+// State helper vars
+int inputKey;
+unsigned char playerCount, prevPlayerCount, validMoveCount, prevRound, tableCount, currentCard, cardIndex, xOffset, fullFirst, cursorX, cursorY, waitCount, wasViewing;
+signed char inputDirX, inputDirY;
+uint16_t prevPot, maxJifs;
+bool noAnim, doAnim, finalFlip, inputTrigger;
+
+unsigned char playerX[8], playerY[8], moveLoc[5];
+signed char playerBetX[8], playerBetY[8], playerDir[8];
+
+// Common local scope temp variables
+unsigned char h, i, j, k, x, y, xx;
+char tempBuffer[128];
+
+char prefs[4];
+
+char *hand, *requestedMove;
+
+
+#ifdef _CMOC_VERSION_
+int main(void)
+#else
+void main(void)
+#endif /* _CMOC_VERSION_ */
+{
   initGraphics();
   initSound();
-  
-  showWelcomScreen();  
+
+#ifdef _CMOC_VERSION_
+  network_init();
+#endif
+#ifdef USE_PLATFORM_SPECIFIC_INPUT
+  initPlatformKeyboardInput();
+#endif
+
+  loadPrefs();
+
+  showWelcomScreen();
   showTableSelectionScreen();
-  
+
   // Main in-game loop
   while (true) {
 
@@ -105,18 +86,25 @@ void main(void) {
       showGameScreen();
       requestPlayerMove();
     } else {
-      pause(10);
+       // Wait a bit to avoid hammering the server if getting bad responses
+       pause(30);
     }
-    
+
     // Handle other key presses
     readCommonInput();
-    
+
     switch(inputKey) {
       case KEY_ESCAPE: // Esc
       case KEY_ESCAPE_ALT: // Esc Alt
-        showInGameMenuScreen();  
+        showInGameMenuScreen();
         break;
     }
-    
+
+
   }
+
+#ifdef _CMOC_VERSION_
+    closeCardGame();
+  return 0;
+#endif /* CMOC_VERSION_  */
 }
